@@ -21,7 +21,7 @@
     <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
     <TieredPGO>false</TieredPGO>
 
-    <Version>0.8.1</Version>
+    <Version>0.8.2</Version>
     <Product>Dynamic Island</Product>
     <!-- Shown as the app name in Task Manager and Settings › Apps › Startup. -->
     <AssemblyTitle>Dynamic Island</AssemblyTitle>

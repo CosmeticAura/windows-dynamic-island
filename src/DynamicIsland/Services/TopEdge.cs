@@ -49,9 +49,10 @@ internal sealed class TopEdge : IDisposable
     /// <summary>Reserves <paramref name="heightPx"/> physical pixels (the closed island) at the top.</summary>
     public void Reserve(int heightPx)
     {
-        if (AppSettings.Current.HangFromScreenTop)
+        if (AppSettings.Current.HangFromScreenTop && OtherBarHoldsTop())
         {
-            // Another bar already keeps the top of the screen; sit on the edge and reserve nothing.
+            // Another bar (Seelen UI's toolbar) already keeps the top of this screen: sit on the edge
+            // over it and reserve nothing. Screens without such a bar keep the island's own band.
             _height = heightPx;
             _reserved = false;
             Refresh();
@@ -157,9 +158,17 @@ internal sealed class TopEdge : IDisposable
     }
 
     /// <summary>Without a reservation: the monitor top, or just below a top-docked taskbar.</summary>
+    /// <summary>
+    /// The main screen is where Seelen UI's toolbar lives, so that's where the island hangs over a bar.
+    /// Checked by position (the primary monitor contains 0,0), not by looking for the bar, because at
+    /// sign-in the island can start before the toolbar does.
+    /// </summary>
+    private bool OtherBarHoldsTop() =>
+        _monitor.X <= 0 && _monitor.Y <= 0 && _monitor.X + _monitor.Width > 0 && _monitor.Y + _monitor.Height > 0;
+
     private int Measure()
     {
-        if (AppSettings.Current.HangFromScreenTop) return _monitor.Y;
+        if (AppSettings.Current.HangFromScreenTop) return _monitor.Y; // every screen: island touches the top edge
         var work = WindowApi.GetWorkArea(_monitor.X + _monitor.Width / 2, _monitor.Y + _monitor.Height / 2);
         return work.Top > _monitor.Y && work.Top < _monitor.Y + _monitor.Height / 4 ? work.Top : _monitor.Y;
     }
