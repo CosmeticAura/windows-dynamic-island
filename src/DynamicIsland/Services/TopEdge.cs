@@ -49,6 +49,14 @@ internal sealed class TopEdge : IDisposable
     /// <summary>Reserves <paramref name="heightPx"/> physical pixels (the closed island) at the top.</summary>
     public void Reserve(int heightPx)
     {
+        if (AppSettings.Current.HangFromScreenTop)
+        {
+            // Another bar already keeps the top of the screen; sit on the edge and reserve nothing.
+            _height = heightPx;
+            _reserved = false;
+            Refresh();
+            return;
+        }
         _height = heightPx;
         _reserved = true;
         try
@@ -151,6 +159,7 @@ internal sealed class TopEdge : IDisposable
     /// <summary>Without a reservation: the monitor top, or just below a top-docked taskbar.</summary>
     private int Measure()
     {
+        if (AppSettings.Current.HangFromScreenTop) return _monitor.Y;
         var work = WindowApi.GetWorkArea(_monitor.X + _monitor.Width / 2, _monitor.Y + _monitor.Height / 2);
         return work.Top > _monitor.Y && work.Top < _monitor.Y + _monitor.Height / 4 ? work.Top : _monitor.Y;
     }

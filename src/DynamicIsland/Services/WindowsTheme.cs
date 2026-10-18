@@ -74,6 +74,16 @@ public sealed class WindowsTheme
         catch { }
         try
         {
+            var hex = AppSettings.Current.AccentOverride?.Trim();
+            if (!string.IsNullOrEmpty(hex) && ColorConverter.ConvertFromString(hex) is Color custom)
+            {
+                AccentOnDark = custom;
+                AccentOnLight = custom;
+            }
+        }
+        catch { }
+        try
+        {
             using var key = Registry.CurrentUser.OpenSubKey(PersonalizeKey);
             // Missing values mean the Windows default: light (Windows 10 before 1903 had no light taskbar).
             SystemLight = key?.GetValue("SystemUsesLightTheme") is int s ? s != 0 : false;

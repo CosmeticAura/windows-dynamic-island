@@ -56,6 +56,15 @@ public sealed class AppSettings
     // Pinned apps
     public bool PinnedAppsEnabled { get; set; } = true;
 
+    // Hector's setup
+    /// <summary>
+    /// Hang the notch from the very top edge of the screen, over any bar another app keeps there
+    /// (Seelen UI's toolbar), and don't reserve a band of its own. Off = the original behavior.
+    /// </summary>
+    public bool HangFromScreenTop { get; set; } = true;
+    /// <summary>Accent color used instead of the Windows accent, as #RRGGBB. Empty = follow Windows.</summary>
+    public string AccentOverride { get; set; } = "#F2A33A";
+
     /// <summary>Raised after any change was saved.</summary>
     public static event Action? Changed;
 
